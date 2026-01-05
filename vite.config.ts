@@ -8,16 +8,15 @@ export default defineConfig({
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
   },
   build: {
-    lib: {
-      entry: 'index.tsx',
-      name: 'BiaChat',
-      fileName: () => 'assets/bia-chat.js',
-      formats: ['es']
-    },
+    // Garante que o build gere o index.html e os assets
+    outDir: 'dist',
     rollupOptions: {
       output: {
-        extend: true,
-      }
-    }
-  }
+        // Força o nome do arquivo JS principal para ser sempre o mesmo
+        entryFileNames: `assets/bia-chat.js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      },
+    },
+  },
 });
