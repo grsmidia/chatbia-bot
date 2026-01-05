@@ -115,13 +115,13 @@ const ChatWidget: React.FC = () => {
               <div className="flex flex-col">
                 <span className="font-bold text-[15px] leading-tight">Bia Baumont</span>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  <span className="text-[10px] text-green-400 font-bold uppercase tracking-wider">Online agora</span>
+                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  <span className="text-[9px] text-green-400 font-medium uppercase tracking-widest opacity-90">Online agora</span>
                 </div>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -170,19 +170,17 @@ const ChatWidget: React.FC = () => {
         </div>
       )}
 
-      {/* BUTTON */}
+      {/* BUTTON (Bola preta com 💭) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`pointer-events-auto w-14 h-14 bg-gray-900 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95 ${!isOpen ? 'animate-float' : 'rotate-90'}`}
+        className={`pointer-events-auto w-14 h-14 bg-gray-900 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95 ${!isOpen ? 'animate-float' : ''}`}
       >
         {isOpen ? (
           <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
           </svg>
         ) : (
-          <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
-          </svg>
+          <span className="text-2xl" style={{ transform: 'translateY(-1px)' }}>💭</span>
         )}
       </button>
     </div>
