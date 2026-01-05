@@ -44,6 +44,16 @@ const ChatWidget: React.FC = () => {
     }
   }, [messages, isTyping, isOpen]);
 
+  // Previne scroll do body quando o chat fullscreen está aberto no mobile
+  useEffect(() => {
+    if (isOpen && window.innerWidth < 640) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
 
@@ -95,36 +105,26 @@ const ChatWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-24 right-3 sm:right-4 z-[2147483647] flex flex-col items-end pointer-events-none">
+    <div className={`fixed z-[2147483647] flex flex-col items-end pointer-events-none transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-24 sm:right-4' : 'bottom-24 right-2 sm:right-4'}`}>
       {isOpen && (
         <div 
-          className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl border border-gray-100"
-          style={{ 
-            width: '350px', 
-            height: '520px', 
-            borderRadius: '28px', 
-            marginBottom: '15px'
-          }}
+          className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl sm:border sm:border-gray-100 sm:mb-[15px] sm:rounded-[28px] w-full h-full sm:w-[350px] sm:h-[520px]"
         >
           {/* HEADER */}
-          <div className="bg-gray-900 px-5 py-4 flex items-center justify-between text-white shrink-0">
+          <div className="bg-gray-900 px-5 py-5 sm:py-4 flex items-center justify-between text-white shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full border-2 border-white/10 p-0.5 bg-white overflow-hidden shrink-0">
                 <img src="https://i.pinimg.com/736x/63/b3/92/63b3926734c90412c089bb4fe5b59166.jpg" alt="Bia" className="w-full h-full object-cover rounded-full" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-[15px] leading-tight">Bia Baumont</span>
+                <span className="font-bold text-[15px] leading-tight text-white">Bia Baumont</span>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
                   <span className="text-[9px] text-green-400 font-medium uppercase tracking-widest opacity-90">Online agora</span>
                 </div>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+            {/* O X foi removido conforme solicitado para uma aparência mais limpa */}
           </div>
 
           {/* MESSAGES */}
@@ -145,8 +145,8 @@ const ChatWidget: React.FC = () => {
             )}
           </div>
 
-          {/* INPUT */}
-          <div className="p-4 bg-white border-t border-gray-100 shrink-0">
+          {/* INPUT AREA */}
+          <div className="p-4 bg-white border-t border-gray-100 shrink-0 pb-6 sm:pb-4">
             <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-4 py-1">
               <input
                 type="text"
@@ -166,14 +166,27 @@ const ChatWidget: React.FC = () => {
                 </svg>
               </button>
             </div>
+            
+            {/* Botão Voltar ao Site */}
+            <div className="mt-3 flex justify-center">
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-[11px] font-bold uppercase tracking-widest flex items-center gap-1 transition-colors"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" />
+                </svg>
+                Voltar ao site
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* BUTTON (Bola preta com 💭) */}
+      {/* FLOATING BALLOON */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`pointer-events-auto w-14 h-14 bg-gray-900 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95 ${!isOpen ? 'animate-float' : ''}`}
+        className={`pointer-events-auto w-14 h-14 bg-gray-900 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95 ${isOpen ? 'hidden sm:flex' : 'flex animate-float'}`}
       >
         {isOpen ? (
           <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
