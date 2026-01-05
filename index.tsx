@@ -11,21 +11,19 @@ const initWidget = () => {
   host.style.position = 'fixed';
   host.style.top = '0';
   host.style.left = '0';
-  host.style.zIndex = '2147483647';
-  host.style.pointerEvents = 'none';
   host.style.width = '100%';
   host.style.height = '100dvh';
+  host.style.zIndex = '2147483647';
+  host.style.pointerEvents = 'none'; // Importante: permite clicar no site por baixo
   document.body.appendChild(host);
 
   const shadow = host.attachShadow({ mode: 'open' });
   const rootContainer = document.createElement('div');
   rootContainer.id = 'bia-root-container';
-  rootContainer.style.pointerEvents = 'auto';
-  rootContainer.style.position = 'absolute';
-  rootContainer.style.bottom = '0';
-  rootContainer.style.right = '0';
+  rootContainer.style.position = 'relative';
   rootContainer.style.width = '100%';
   rootContainer.style.height = '100%';
+  rootContainer.style.pointerEvents = 'none'; // Mantém neutro, filhos habilitam o clique
   shadow.appendChild(rootContainer);
 
   const tailwindLink = document.createElement('link');
@@ -46,7 +44,7 @@ const initWidget = () => {
       line-height: 1.4;
     }
 
-    button { cursor: pointer; border: none; background: none; }
+    button { cursor: pointer; border: none; background: none; outline: none !important; }
     input { font-family: inherit; -webkit-appearance: none; border-radius: 0; }
 
     .chat-container::-webkit-scrollbar { width: 5px; }
