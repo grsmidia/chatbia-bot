@@ -13,11 +13,12 @@ const Button: React.FC<ButtonProps> = ({ label, url, type = 'checkout' }) => {
       case 'checkout':
         return 'bg-green-600 hover:bg-green-700 text-white shadow-xl active:scale-95 py-4 text-sm animate-pulse-cta';
       case 'whatsapp':
-        return 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm py-2.5 text-xs';
+        // Garantindo fundo verde e texto branco para máxima visibilidade
+        return 'bg-green-500 hover:bg-green-600 text-white shadow-md py-3 text-xs';
       case 'support':
-        return 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm py-2.5 text-xs';
+        return 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm py-3 text-xs';
       default:
-        return 'bg-gray-800 text-white py-2.5 text-xs';
+        return 'bg-gray-800 text-white py-3 text-xs';
     }
   };
 
@@ -26,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({ label, url, type = 'checkout' }) => {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`${getStyles()} inline-flex items-center justify-center px-6 rounded-full font-black transition-all my-2 w-full text-center uppercase tracking-widest`}
+      className={`${getStyles()} inline-flex items-center justify-center px-6 rounded-full font-black transition-all my-2 w-full text-center uppercase tracking-widest no-underline border-none`}
     >
       {type === 'checkout' && (
         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
