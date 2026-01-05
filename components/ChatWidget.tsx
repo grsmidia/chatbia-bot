@@ -44,19 +44,13 @@ const ChatWidget: React.FC = () => {
     }
   }, [messages, isTyping, isOpen]);
 
-  // Previne scroll do body quando o chat fullscreen está aberto no mobile
   useEffect(() => {
     if (isOpen && window.innerWidth < 640) {
       document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
     } else {
       document.body.style.overflow = '';
-      document.body.style.touchAction = '';
     }
-    return () => { 
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   const handleSend = async () => {
@@ -110,10 +104,10 @@ const ChatWidget: React.FC = () => {
   };
 
   return (
-    <div className={`fixed z-[2147483647] flex flex-col items-end pointer-events-none transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-24 sm:right-4' : 'bottom-24 right-2 sm:right-4'}`}>
+    <div className={`absolute flex flex-col items-end pointer-events-none transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-24 sm:right-4' : 'bottom-24 right-2 sm:right-4'}`}>
       {isOpen && (
         <div 
-          className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl sm:border sm:border-gray-100 sm:mb-[15px] sm:rounded-[28px] w-full h-[100dvh] sm:h-[520px] sm:w-[350px]"
+          className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl sm:border sm:border-gray-100 sm:mb-[15px] sm:rounded-[28px] w-full h-full sm:h-[520px] sm:w-[350px]"
         >
           {/* HEADER */}
           <div className="bg-gray-900 px-5 py-5 sm:py-4 flex items-center justify-between text-white shrink-0">
@@ -171,7 +165,6 @@ const ChatWidget: React.FC = () => {
               </button>
             </div>
             
-            {/* Botão Voltar ao Site */}
             <div className="mt-3 flex justify-center">
               <button 
                 onClick={() => setIsOpen(false)}
