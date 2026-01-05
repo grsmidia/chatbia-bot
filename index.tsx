@@ -13,8 +13,8 @@ const initWidget = () => {
   host.style.right = '0';
   host.style.zIndex = '2147483647';
   host.style.pointerEvents = 'none';
-  host.style.width = '100%';
-  host.style.height = '100%';
+  host.style.width = '100vw';
+  host.style.height = '100vh';
   document.body.appendChild(host);
 
   const shadow = host.attachShadow({ mode: 'open' });
@@ -39,35 +39,29 @@ const initWidget = () => {
     
     :host { 
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      -webkit-font-smoothing: antialiased;
     }
 
-    /* RESET AGRESSIVO: Impede que o CSS do tema Shopify afete o chat */
-    * {
-      box-sizing: border-box !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      max-width: none !important;
-      max-height: none !important;
-      line-height: 1.5;
+    /* Reset controlado para não vazar estilo da Shopify mas permitir o Tailwind funcionar */
+    div, span, h3, p, button, input {
+      box-sizing: border-box;
+      line-height: 1.4;
     }
 
-    button, input {
-      font-family: inherit;
-    }
+    button { cursor: pointer; border: none; background: none; }
+    input { font-family: inherit; }
 
-    .chat-container::-webkit-scrollbar { width: 4px; }
+    .chat-container::-webkit-scrollbar { width: 5px; }
     .chat-container::-webkit-scrollbar-track { background: transparent; }
-    .chat-container::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+    .chat-container::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     
-    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
     .animate-float { animation: float 3s ease-in-out infinite; }
     
     @keyframes slideUp { 
-      from { transform: translateY(20px) scale(0.98); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-    .animate-slide-up { animation: slideUp 0.25s cubic-bezier(0, 0, 0.2, 1) forwards; }
+    .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0, 0, 0.2, 1) forwards; }
   `;
   shadow.appendChild(styleTag);
 
