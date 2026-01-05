@@ -9,12 +9,12 @@ const initWidget = () => {
   const host = document.createElement('div');
   host.id = 'bia-shadow-host';
   host.style.position = 'fixed';
-  host.style.bottom = '0';
-  host.style.right = '0';
+  host.style.top = '0';
+  host.style.left = '0';
   host.style.zIndex = '2147483647';
   host.style.pointerEvents = 'none';
-  host.style.width = '100vw';
-  host.style.height = '100vh';
+  host.style.width = '100%';
+  host.style.height = '100dvh';
   document.body.appendChild(host);
 
   const shadow = host.attachShadow({ mode: 'open' });
@@ -41,14 +41,13 @@ const initWidget = () => {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* Reset controlado para não vazar estilo da Shopify mas permitir o Tailwind funcionar */
     div, span, h3, p, button, input {
       box-sizing: border-box;
       line-height: 1.4;
     }
 
     button { cursor: pointer; border: none; background: none; }
-    input { font-family: inherit; }
+    input { font-family: inherit; -webkit-appearance: none; border-radius: 0; }
 
     .chat-container::-webkit-scrollbar { width: 5px; }
     .chat-container::-webkit-scrollbar-track { background: transparent; }
