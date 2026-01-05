@@ -44,41 +44,27 @@ const ChatWidget: React.FC = () => {
     }
   }, [messages, isTyping, isOpen]);
 
-  // Previne scroll do site quando aberto no mobile
+  // Fix para o Mobile: Trava o scroll do fundo mas mantém a altura dinâmica
   useEffect(() => {
     if (isOpen && window.innerWidth < 640) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
+      return () => { document.body.style.overflow = originalStyle; };
     }
   }, [isOpen]);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      parts: [{ text: input }],
-      timestamp: new Date()
-    };
-
+    const userMessage: Message = { id: Date.now().toString(), type: 'user', parts: [{ text: input }], timestamp: new Date() };
     setMessages(prev => [...prev, userMessage]);
     const currentInput = input;
     setInput('');
     setIsTyping(true);
-
     try {
       const response = await sendMessage(currentInput);
       if (audioRef.current) audioRef.current.play().catch(() => {});
-
       const aiParts: MessagePart[] = [];
       if (response.text) aiParts.push({ text: response.text });
-
       if (response.functionCalls) {
         for (const fc of response.functionCalls) {
           if (fc.name === 'generateCheckoutLink') {
@@ -93,27 +79,17 @@ const ChatWidget: React.FC = () => {
           }
         }
       }
-
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        parts: aiParts,
-        timestamp: new Date()
-      }]);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsTyping(false);
-    }
+      setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), type: 'ai', parts: aiParts, timestamp: new Date() }]);
+    } catch (error) { console.error(error); } finally { setIsTyping(false); }
   };
 
   return (
-    <>
-      {/* CHAT CONTAINER */}
+    <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0 }}>
+      {/* JANELA DE CHAT */}
       {isOpen && (
         <div 
           className="fixed inset-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[350px] sm:h-[550px] bg-white sm:rounded-[28px] shadow-2xl flex flex-col overflow-hidden animate-slide-up pointer-events-auto"
-          style={{ zIndex: 100 }}
+          style={{ zIndex: 100, pointerEvents: 'auto' }}
         >
           {/* HEADER */}
           <div className="bg-gray-900 p-5 flex items-center justify-between text-white shrink-0">
@@ -129,13 +105,13 @@ const ChatWidget: React.FC = () => {
                 </div>
               </div>
             </div>
+            <button onClick={() => setIsOpen(false)} className="text-white/50 hover:text-white sm:hidden">
+               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
 
           {/* MESSAGES */}
-          <div 
-            ref={scrollRef} 
-            className="flex-1 overflow-y-auto p-4 space-y-4 chat-container bg-gray-50/50"
-          >
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 chat-container bg-gray-50/50">
             {messages.map(msg => <MessageBubble key={msg.id} message={msg} />)}
             {isTyping && (
               <div className="flex justify-start">
@@ -164,20 +140,12 @@ const ChatWidget: React.FC = () => {
                 disabled={!input.trim() || isTyping}
                 className={`p-2 transition-all ${input.trim() && !isTyping ? 'text-gray-900' : 'text-gray-300'}`}
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                </svg>
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
               </button>
             </div>
-            
             <div className="mt-4 flex justify-center">
-              <button 
-                onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600 text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" />
-                </svg>
+              <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-colors">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
                 Voltar ao site
               </button>
             </div>
@@ -185,17 +153,34 @@ const ChatWidget: React.FC = () => {
         </div>
       )}
 
-      {/* FLOATING BALLOON BUTTON */}
+      {/* BALÃO FLUTUANTE (BOTÃO) */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gray-900 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95 animate-float pointer-events-auto"
-          style={{ zIndex: 99 }}
+          className="animate-float"
+          style={{
+            pointerEvents: 'auto',
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            width: '60px',
+            height: '60px',
+            backgroundColor: '#111827', // Gray-900
+            borderRadius: '9999px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            zIndex: 99,
+            transition: 'transform 0.3s ease',
+            cursor: 'pointer'
+          }}
         >
-          <span className="text-2xl" style={{ transform: 'translateY(-1px)' }}>💭</span>
+          <span style={{ fontSize: '24px' }}>💭</span>
         </button>
       )}
-    </>
+    </div>
   );
 };
 
