@@ -95,7 +95,7 @@ const ChatWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-24 right-4 sm:right-8 z-[2147483647] flex flex-col items-end pointer-events-none">
+    <div className="fixed bottom-24 right-2 sm:right-3 z-[2147483647] flex flex-col items-end pointer-events-none">
       {isOpen && (
         <div 
           className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl border border-gray-100"
