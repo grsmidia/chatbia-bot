@@ -8,44 +8,45 @@ const initWidget = () => {
 
   const host = document.createElement('div');
   host.id = 'bia-shadow-host';
-  host.style.position = 'fixed';
-  host.style.top = '0';
-  host.style.left = '0';
-  host.style.width = '100%';
-  host.style.height = '100dvh';
-  host.style.zIndex = '2147483647';
-  host.style.pointerEvents = 'none'; // Importante: permite clicar no site por baixo
+  // O host ocupa a tela toda para permitir o fullscreen no mobile, mas pointer-events: none permite clicar no site por baixo.
+  Object.assign(host.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100dvh',
+    zIndex: '2147483647',
+    pointerEvents: 'none',
+  });
   document.body.appendChild(host);
 
   const shadow = host.attachShadow({ mode: 'open' });
+  
   const rootContainer = document.createElement('div');
   rootContainer.id = 'bia-root-container';
-  rootContainer.style.position = 'relative';
-  rootContainer.style.width = '100%';
-  rootContainer.style.height = '100%';
-  rootContainer.style.pointerEvents = 'none'; // Mantém neutro, filhos habilitam o clique
+  Object.assign(rootContainer.style, {
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+  });
   shadow.appendChild(rootContainer);
-
-  const tailwindLink = document.createElement('link');
-  tailwindLink.rel = 'stylesheet';
-  tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-  shadow.appendChild(tailwindLink);
 
   const styleTag = document.createElement('style');
   styleTag.textContent = `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
     
     :host { 
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    div, span, h3, p, button, input {
+    button, input, div {
       box-sizing: border-box;
-      line-height: 1.4;
     }
-
-    button { cursor: pointer; border: none; background: none; outline: none !important; }
-    input { font-family: inherit; -webkit-appearance: none; border-radius: 0; }
 
     .chat-container::-webkit-scrollbar { width: 5px; }
     .chat-container::-webkit-scrollbar-track { background: transparent; }
