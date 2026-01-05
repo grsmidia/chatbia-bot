@@ -48,10 +48,15 @@ const ChatWidget: React.FC = () => {
   useEffect(() => {
     if (isOpen && window.innerWidth < 640) {
       document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
     } else {
       document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => { 
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
   }, [isOpen]);
 
   const handleSend = async () => {
@@ -108,7 +113,7 @@ const ChatWidget: React.FC = () => {
     <div className={`fixed z-[2147483647] flex flex-col items-end pointer-events-none transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-24 sm:right-4' : 'bottom-24 right-2 sm:right-4'}`}>
       {isOpen && (
         <div 
-          className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl sm:border sm:border-gray-100 sm:mb-[15px] sm:rounded-[28px] w-full h-full sm:w-[350px] sm:h-[520px]"
+          className="animate-slide-up pointer-events-auto flex flex-col bg-white overflow-hidden shadow-2xl sm:border sm:border-gray-100 sm:mb-[15px] sm:rounded-[28px] w-full h-[100dvh] sm:h-[520px] sm:w-[350px]"
         >
           {/* HEADER */}
           <div className="bg-gray-900 px-5 py-5 sm:py-4 flex items-center justify-between text-white shrink-0">
@@ -124,7 +129,6 @@ const ChatWidget: React.FC = () => {
                 </div>
               </div>
             </div>
-            {/* O X foi removido conforme solicitado para uma aparência mais limpa */}
           </div>
 
           {/* MESSAGES */}
@@ -154,7 +158,7 @@ const ChatWidget: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Escreva sua mensagem..."
-                className="flex-1 bg-transparent border-none py-3 text-[14px] text-gray-800 focus:outline-none placeholder-gray-400"
+                className="flex-1 bg-transparent border-none py-3 text-[16px] text-gray-800 focus:outline-none placeholder-gray-400"
               />
               <button
                 onClick={handleSend}
