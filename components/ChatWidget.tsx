@@ -42,7 +42,7 @@ const ChatWidget: React.FC = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isTyping]);
+  }, [messages, isTyping, isOpen]);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -94,33 +94,77 @@ const ChatWidget: React.FC = () => {
     }
   };
 
+  // ESTILOS INLINE PARA GARANTIR DIMENSÕES FIXAS
+  const widgetContainerStyle: React.CSSProperties = {
+    position: 'fixed',
+    bottom: '100px', // Mais pra cima
+    right: '20px',  // Mais pra direita
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    zIndex: 2147483647,
+    pointerEvents: 'none'
+  };
+
+  const chatBoxStyle: React.CSSProperties = {
+    width: '360px',
+    maxWidth: 'calc(100vw - 40px)',
+    height: '580px',
+    maxHeight: '70vh',
+    backgroundColor: 'white',
+    borderRadius: '24px',
+    boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    marginBottom: '16px',
+    border: '1px solid #eee',
+    pointerEvents: 'auto'
+  };
+
+  const floatingButtonStyle: React.CSSProperties = {
+    width: '52px', // Menor
+    height: '52px', // Menor
+    backgroundColor: '#111827',
+    borderRadius: '50%',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    cursor: 'pointer',
+    border: 'none',
+    pointerEvents: 'auto',
+    transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+  };
+
   return (
-    <div className="fixed bottom-12 right-2 sm:right-3 z-[2147483647] flex flex-col items-end pointer-events-none">
+    <div style={widgetContainerStyle}>
       {isOpen && (
-        <div className="animate-slide-up pointer-events-auto w-[310px] sm:w-[360px] h-[500px] bg-white rounded-[2rem] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden mb-4 border border-gray-100">
-          {/* HEADER FIXO */}
-          <div className="bg-gray-900 px-5 py-4 flex items-center justify-between text-white shrink-0">
+        <div className="animate-slide-up" style={chatBoxStyle}>
+          {/* HEADER */}
+          <div className="bg-gray-900 px-5 py-4 flex items-center justify-between text-white flex-shrink-0" style={{ margin: 0 }}>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full border border-white/20 p-0.5 bg-white">
+              <div className="w-10 h-10 rounded-full border border-white/20 p-0.5 bg-white flex-shrink-0 overflow-hidden">
                 <img src="https://i.pinimg.com/736x/63/b3/92/63b3926734c90412c089bb4fe5b59166.jpg" alt="Bia" className="w-full h-full object-cover rounded-full" />
               </div>
-              <div>
-                <h3 className="font-bold text-sm tracking-tight">Bia Baumont</h3>
+              <div className="flex flex-col">
+                <h3 className="font-bold text-sm tracking-tight" style={{ margin: 0 }}>Bia Baumont</h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                  <span className="text-[10px] text-green-400 font-semibold uppercase tracking-wider">Online</span>
+                  <span className="text-[10px] text-green-400 font-bold uppercase tracking-widest">Online</span>
                 </div>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-white/10 rounded-xl transition-colors border-none bg-transparent cursor-pointer">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
           </div>
 
-          {/* ÁREA DE MENSAGENS COM SCROLL FIXO */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 chat-container space-y-4 bg-[#fcfcfc]">
+          {/* CHAT AREA */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 chat-container space-y-4 bg-gray-50/30" style={{ scrollBehavior: 'smooth' }}>
             {messages.map(msg => <MessageBubble key={msg.id} message={msg} />)}
             {isTyping && (
               <div className="flex justify-start">
@@ -133,21 +177,22 @@ const ChatWidget: React.FC = () => {
             )}
           </div>
 
-          {/* INPUT FIXO NO RODAPÉ */}
-          <div className="p-3 bg-white border-t border-gray-50 shrink-0">
-            <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-3 py-1.5">
+          {/* INPUT AREA */}
+          <div className="p-4 bg-white border-t border-gray-100 flex-shrink-0">
+            <div className="flex items-center gap-2 bg-gray-100 rounded-2xl px-3 py-1">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Escreva aqui..."
-                className="flex-1 bg-transparent border-none py-2 text-sm text-gray-800 focus:outline-none"
+                placeholder="Escreva sua dúvida..."
+                className="flex-1 bg-transparent border-none py-2.5 text-[14px] text-gray-800 focus:outline-none"
+                style={{ margin: 0, padding: '10px 0' }}
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || isTyping}
-                className={`p-2 rounded-xl transition-all ${input.trim() && !isTyping ? 'bg-gray-900 text-white' : 'text-gray-300'}`}
+                className={`p-2 rounded-xl transition-all border-none cursor-pointer ${input.trim() && !isTyping ? 'bg-gray-900 text-white' : 'text-gray-300 bg-transparent'}`}
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
@@ -158,17 +203,18 @@ const ChatWidget: React.FC = () => {
         </div>
       )}
 
-      {/* BOTÃO FLUTUANTE REDUZIDO */}
+      {/* FLOATING BUTTON */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="pointer-events-auto relative w-12 h-12 sm:w-13 sm:h-13 bg-gray-900 rounded-full shadow-2xl flex items-center justify-center text-white transition-all duration-300 hover:scale-105 active:scale-90 animate-float"
+        style={floatingButtonStyle}
+        className={`${!isOpen ? 'animate-float' : 'rotate-90'}`}
       >
         {isOpen ? (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
           </svg>
         ) : (
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-6.5 h-6.5" fill="currentColor" viewBox="0 0 20 20">
             <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
           </svg>
         )}
